@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Лента подписок
+{% endblock title %}
+
+{% block content %}
+  <div class="container py-5">
+    <h1>Последние посты избранных авторов</h1>
+    {% include 'posts/includes/switcher.html' %}
+      {% for post in page_obj %}
+        <ul>
+          <li>
+            Автор:
+            <a href="{% url 'posts:profile' post.author.username %}">{% if post.author.get_full_name %}{{ post.author.get_full_name }}{% else %}{{ post.author.username }}{% endif %}</a>
+          </li>
+          <li>
+            Дата публикации: {{ post.pub_date|date:"d E Y" }}
+          </li>
+        </ul>
+        <p>{{ post.text|linebreaksbr }}</p>
+        {% load thumbnail %}
+        {% thumbnail post.image "480x339" crop="center" upscale=True as im %}
+          <img class="card-img" src="{{ im.url }}" />
+        {% endthumbnail %}
+        <a href="{% url 'posts:post_detail' post.id %}">подробная информация</a><br>
+        {% if post.group %}
+          <p>
+            Группа:
+            <a href="{% url 'posts:group' slug=post.group.slug %}"> {{post.group.title}}</a>
+          </p>
+        {% endif %}
+        {% if not forloop.last %}<hr>{% endif %}
+      {% endfor %}
+  </div>  
+  {% include 'posts/includes/paginator.html' %}
+{% endblock %}
