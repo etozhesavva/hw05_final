@@ -140,7 +140,7 @@ class FormsTests(TestCase):
         self.assertEqual(post.image.name, f'posts/{image_data.name}')
         self.assertEqual(post.author, self.post.author)
         self.assertRedirects(response, self.POST_URL)
-    
+
     def test_comment_save(self):
         form_data = {
             'text': 'Текст',
