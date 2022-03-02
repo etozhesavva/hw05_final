@@ -37,7 +37,7 @@ class Post(models.Model):
         verbose_name="наименование группы",
     )
     image = models.ImageField(
-        verbose_name = 'Картинка',
+        verbose_name='Картинка',
         upload_to='posts/',
         blank=True,
         null=True

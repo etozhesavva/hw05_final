@@ -1,4 +1,3 @@
-from turtle import title
 from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
@@ -75,7 +74,7 @@ class PostPagesTests(TestCase):
         self.assertEqual(group_test.slug, self.group.slug)
         self.assertEqual(group_test.title, self.group.title)
         self.assertEqual(group_test.description, self.group.description)
-        
+
     def test_show_correct_context(self):
         cache.clear()
         urls_names = [
@@ -108,7 +107,7 @@ class PostPagesTests(TestCase):
     def test_profile_page_show_correct_context(self):
         response = self.authorized_client.get(PROFILE)
         self.assertEqual(self.user, response.context.get('author'))
-    
+
     def test_cache_index_page(self):
         cache.clear()
         response = self.authorized_client.get(reverse('posts:index'))
@@ -134,8 +133,6 @@ class PostPagesTests(TestCase):
         follow_exist = Follow.objects.filter(user=self.user2,
                                              author=self.user).exists()
         self.assertFalse(follow_exist)
-
-
 
 
 class PaginatorViewsTest(TestCase):
