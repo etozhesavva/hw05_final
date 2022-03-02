@@ -1,14 +1,11 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, get_object_or_404, redirect
-from django.views.decorators.cache import cache_page
 
 from .utils import get_page_context
-from yatube.settings import CACHE_S
 from .forms import PostForm, CommentForm
 from .models import Post, User, Group, Follow
 
 
-@cache_page(CACHE_S)
 def index(request):
     return render(request, 'posts/index.html', {
         'page_obj': get_page_context(Post.objects.all(), request),

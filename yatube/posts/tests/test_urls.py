@@ -14,6 +14,8 @@ PROFILE_URL = reverse('posts:profile', kwargs={'username': USERNAME})
 LOGIN_CREATE_POST = f'{AUTH_LOGIN}?next={NEW_POST}'
 
 
+
+
 class UrlsTests(TestCase):
 
     @classmethod
