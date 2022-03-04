@@ -37,7 +37,7 @@ class Post(models.Model):
         verbose_name="наименование группы",
     )
     image = models.ImageField(
-        verbose_name='Картинка',
+        verbose_name = 'Картинка',
         upload_to='posts/',
         blank=True,
         null=True
@@ -55,31 +55,44 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE,
-                             verbose_name='Ссылка на пост',
-                             related_name='comments')
-    author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               verbose_name='Автор комментария',
-                               related_name='comments')
-    text = models.TextField(verbose_name='Текст комментария')
-    created = models.DateTimeField('Дата комментария',
-                                   auto_now_add=True,
-                                   db_index=True)
+    post = models.ForeignKey(
+        Post,
+        on_delete=models.CASCADE,
+        verbose_name='Ссылка на пост',
+        related_name='comments'
+    )
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE,
+        verbose_name='Автор комментария',
+        related_name='comments'
+    )
+    text = models.TextField(
+        verbose_name='Текст комментария'
+    )
+    created = models.DateTimeField(
+        'Дата комментария',
+         auto_now_add=True,
+         db_index=True
+    )
 
     class Meta:
         ordering = ['-created']
+        verbose_name = "комментарий"
+        verbose_name_plural = "комментарии" 
 
     def __str__(self):
-        return self.text
+        return self.text[:30]
 
 
 class Follow(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE,
-                               verbose_name='Подписка',
+                               verbose_name='автор подписки',
                                related_name='following')
     user = models.ForeignKey(User, on_delete=models.CASCADE,
                              verbose_name='Подписчик',
                              related_name='follower')
 
     class Meta:
+        verbose_name = "подписка"
+        verbose_name_plural = "подписки" 
         UniqueConstraint(fields=['author', 'user'], name='follow_unique')

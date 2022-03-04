@@ -12,6 +12,9 @@ SLUG = 'testgroup'
 GROUP_URL = reverse('posts:group', kwargs={'slug': SLUG})
 PROFILE_URL = reverse('posts:profile', kwargs={'username': USERNAME})
 LOGIN_CREATE_POST = f'{AUTH_LOGIN}?next={NEW_POST}'
+FOLLOW_INDEX = reverse('posts:follow_index')
+FOLLOW = reverse('posts:profile_follow', args=[USERNAME])
+UNFOLLOW = reverse('posts:profile_unfollow', args=[USERNAME])
 
 
 class UrlsTests(TestCase):
@@ -38,12 +41,14 @@ class UrlsTests(TestCase):
             'posts:post_edit',
             args=[cls.post.id])
         cls.LOGIN_EDIT_POST = f'{AUTH_LOGIN}?next={cls.POST_EDIT_URL}'
+        cls.ADD_COMMENT_URL = reverse('posts:add_comment',
+                                      args=[cls.post.id])
+        cls.guest = Client()
+        cls.author = Client()
+        cls.another = Client()
 
-    def setUp(self):
-        self.guest = Client()
-        self.author = Client()
-        self.author.force_login(self.user)
-        self.another = Client()
+    def setUp(self):        
+        self.author.force_login(self.user)        
         self.another.force_login(self.user2)
 
     def test_urls_status_code(self):
@@ -57,6 +62,9 @@ class UrlsTests(TestCase):
             [self.POST_EDIT_URL, self.guest, 302],
             [self.POST_EDIT_URL, self.author, 200],
             [NEW_POST, self.author, 200],
+            [self.ADD_COMMENT_URL, self.guest, 302],
+            [FOLLOW, self.another, 302],
+            [UNFOLLOW, self.another, 302]
         ]
         for url, client, status in urls_names:
             with self.subTest(url=url, client=client, status=status):
@@ -69,7 +77,8 @@ class UrlsTests(TestCase):
             ['posts/group_list.html', GROUP_URL],
             ['posts/post_detail.html', self.POST_URL],
             ['posts/profile.html', PROFILE_URL],
-            ['posts/create_post.html', self.POST_EDIT_URL]
+            ['posts/create_post.html', self.POST_EDIT_URL],
+            ['posts/follow.html', FOLLOW_INDEX]
         ]
         for template, url in template_urls_names:
             with self.subTest(url=url):
@@ -82,6 +91,10 @@ class UrlsTests(TestCase):
             [self.POST_EDIT_URL, self.guest,
              self.LOGIN_EDIT_POST],
             [self.POST_EDIT_URL, self.another, self.POST_URL],
+            [self.ADD_COMMENT_URL, self.guest,
+             f'{AUTH_LOGIN}?next={self.ADD_COMMENT_URL}'],
+            [FOLLOW, self.another, PROFILE_URL],
+            [UNFOLLOW, self.another, PROFILE_URL]
         ]
         for url, client, redirect in urls:
             with self.subTest(url=url, client=client):

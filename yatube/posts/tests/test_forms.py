@@ -12,6 +12,22 @@ from posts.models import Group, Post, User
 TEMP_MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
 
 NEW_POST = reverse('posts:create')
+SMALL_GIF = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
+        )
+SM_GIF = (
+            b'\x47\x49\x46\x38\x39\x61\x02\x00'
+            b'\x01\x00\x80\x00\x00\x00\x00\x00'
+            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+            b'\x0A\x00\x3B'
+        )
 
 
 @override_settings(MEDIA_ROOT=TEMP_MEDIA_ROOT)
@@ -49,6 +65,8 @@ class FormsTests(TestCase):
         cls.ADD_COMMENT_URL = reverse(
             'posts:add_comment',
             args=[cls.post.id])
+        cls.authorized_client = Client()
+
 
     @classmethod
     def tearDownClass(cls):
@@ -56,20 +74,11 @@ class FormsTests(TestCase):
         shutil.rmtree(TEMP_MEDIA_ROOT, ignore_errors=True)
 
     def setUp(self):
-        self.authorized_client = Client()
         self.authorized_client.force_login(self.user)
 
     def test_post_create(self):
         posts = Post.objects.all()
         posts.delete()
-        SMALL_GIF = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
         UPLOADED = SimpleUploadedFile(
             name='small.gif',
             content=SMALL_GIF,
@@ -86,12 +95,11 @@ class FormsTests(TestCase):
             follow=True
         )
         post = response.context['page_obj'][0]
-        image_data = data['image']
         self.assertEqual(len(response.context['page_obj']), 1)
         self.assertEqual(post.text, data['text'])
         self.assertEqual(data['group'], post.group.id)
         self.assertEqual(post.author, self.user)
-        self.assertEqual(post.image.name, f'posts/{image_data.name}')
+        self.assertEqual(post.image.name, f'posts/{data["image"].name}')
         self.assertRedirects(response, self.PROFILE_URL)
 
     def test_new_post_show_correct_context(self):
@@ -111,14 +119,6 @@ class FormsTests(TestCase):
                     self.assertIsInstance(form_field, expected)
 
     def test_edit_post(self):
-        SM_GIF = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
-        )
         UPLOADED = SimpleUploadedFile(
             name='sm.gif',
             content=SM_GIF,
@@ -134,18 +134,15 @@ class FormsTests(TestCase):
             data=form_data, follow=True
         )
         post = response.context['post']
-        image_data = form_data['image']
         self.assertEqual(post.text, form_data['text'])
         self.assertEqual(form_data['group'], post.group.id)
-        self.assertEqual(post.image.name, f'posts/{image_data.name}')
+        self.assertEqual(post.image.name, f'posts/{form_data["image"].name}')
         self.assertEqual(post.author, self.post.author)
         self.assertRedirects(response, self.POST_URL)
-
+    
     def test_comment_save(self):
         form_data = {
             'text': 'Текст',
-            'post': self.post.id,
-            'author': self.user,
         }
         response = self.authorized_client.post(
             self.ADD_COMMENT_URL,
@@ -154,5 +151,3 @@ class FormsTests(TestCase):
         self.assertEqual(len(response.context['comments']), 1)
         comment = response.context['comments'][0]
         self.assertEqual(comment.text, form_data['text'])
-        self.assertEqual(comment.post, self.post)
-        self.assertEqual(comment.author, self.user)
