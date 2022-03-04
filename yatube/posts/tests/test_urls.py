@@ -47,8 +47,8 @@ class UrlsTests(TestCase):
         cls.author = Client()
         cls.another = Client()
 
-    def setUp(self):        
-        self.author.force_login(self.user)        
+    def setUp(self):
+        self.author.force_login(self.user)
         self.another.force_login(self.user2)
 
     def test_urls_status_code(self):

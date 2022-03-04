@@ -1,10 +1,7 @@
-from email.mime import image
-from turtle import title
 from django.core.cache import cache
 from django.test import Client, TestCase
 from django.urls import reverse
 from django.core.files.uploadedfile import SimpleUploadedFile
-
 
 from yatube.settings import PAGINATOR_CONST
 from ..models import Post, Group, User, Comment, Follow
@@ -21,12 +18,12 @@ FOLLOW_INDEX = reverse('posts:follow_index')
 FOLLOW = reverse('posts:profile_follow', args=[USERNAME])
 UNFOLLOW = reverse('posts:profile_unfollow', args=[USERNAME])
 SMALL_GIF = (
-            b'\x47\x49\x46\x38\x39\x61\x02\x00'
-            b'\x01\x00\x80\x00\x00\x00\x00\x00'
-            b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
-            b'\x00\x00\x00\x2C\x00\x00\x00\x00'
-            b'\x02\x00\x01\x00\x00\x02\x02\x0C'
-            b'\x0A\x00\x3B'
+    b'\x47\x49\x46\x38\x39\x61\x02\x00'
+    b'\x01\x00\x80\x00\x00\x00\x00\x00'
+    b'\xFF\xFF\xFF\x21\xF9\x04\x00\x00'
+    b'\x00\x00\x00\x2C\x00\x00\x00\x00'
+    b'\x02\x00\x01\x00\x00\x02\x02\x0C'
+    b'\x0A\x00\x3B'
 )
 
 
@@ -56,7 +53,7 @@ class PostPagesTests(TestCase):
             author=cls.user,
             group=cls.group,
             image=uploaded
-            
+
         )
         cls.POST_URL = reverse(
             'posts:post_detail',
@@ -89,7 +86,7 @@ class PostPagesTests(TestCase):
         self.assertEqual(group.slug, self.group.slug)
         self.assertEqual(group.title, self.group.title)
         self.assertEqual(group.description, self.group.description)
-        
+
     def test_show_correct_context(self):
         cache.clear()
         urls_names = [
@@ -122,7 +119,7 @@ class PostPagesTests(TestCase):
     def test_profile_page_show_correct_context(self):
         response = self.authorized_client.get(PROFILE)
         self.assertEqual(self.user, response.context.get('author'))
-    
+
     def test_cache_index_page(self):
         cache.clear()
         response = self.authorized_client.get(INDEX)
@@ -139,7 +136,7 @@ class PostPagesTests(TestCase):
     def test_follow_user(self):
         self.authorized_client2.get(FOLLOW)
         self.assertTrue(Follow.objects.filter(user=self.user2,
-                                             author=self.user).exists())
+                                              author=self.user).exists())
 
     def test_unfollow_user(self):
         self.authorized_client2.get(FOLLOW)
@@ -147,8 +144,6 @@ class PostPagesTests(TestCase):
         follow_exist = Follow.objects.filter(user=self.user2,
                                              author=self.user).exists()
         self.assertFalse(follow_exist)
-
-
 
 
 class PaginatorViewsTest(TestCase):

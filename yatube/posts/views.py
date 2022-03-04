@@ -87,11 +87,11 @@ def add_comment(request, post_id):
 @login_required
 def follow_index(request):
     return render(request,
-        'posts/follow.html',
-        {'page_obj':get_page_context(
-            Post.objects.filter(
-                author__following__user=request.user), request)}
-            )
+                  'posts/follow.html',
+                  {'page_obj': get_page_context(
+                      Post.objects.filter(
+                          author__following__user=request.user), request)}
+                  )
 
 
 @login_required

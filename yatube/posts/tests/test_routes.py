@@ -17,7 +17,8 @@ class ReverseTests(TestCase):
         [f'/posts/{POST_ID}/comment/', 'posts:add_comment', [POST_ID]],
         ['/follow/', 'posts:follow_index', []],
         [f'/profile/{USERNAME}/follow/', 'posts:profile_follow', [USERNAME]],
-        [f'/profile/{USERNAME}/unfollow/', 'posts:profile_unfollow', [USERNAME]]
+        [f'/profile/{USERNAME}/unfollow/',
+         'posts:profile_unfollow', [USERNAME]]
     ]
 
     def test_url_uses_correct_reverse(self):
