@@ -36,7 +36,7 @@ class UrlsTests(TestCase):
             text='Test',
             author=cls.user,
             group=cls.group
-        )        
+        )
         cls.POST_URL = reverse(
             'posts:post_detail',
             args=[cls.post.id])

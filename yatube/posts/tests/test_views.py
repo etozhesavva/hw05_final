@@ -113,7 +113,7 @@ class PostPagesTests(TestCase):
 
     def test_unfollow_index_page_null_or_post_not_in_group2(self):
         urls = [
-            GROUP2, 
+            GROUP2,
             FOLLOW_INDEX,
         ]
 

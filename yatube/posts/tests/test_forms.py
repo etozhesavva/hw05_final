@@ -208,10 +208,6 @@ class FormsTests(TestCase):
         self.assertEqual(self.post.comments.count(), 0)
 
     def test_anonimys_or_non_author_post_edit(self):
-        text = self.post.text
-        author = self.post.author
-        group = self.post.group.pk
-        image = self.post.image
         uploaded = SimpleUploadedFile(
             name='small.gif',
             content=SMALL_GIF,
@@ -227,6 +223,7 @@ class FormsTests(TestCase):
             [self.another, self.POST_URL]
         ]
         #не знаю как это фиксить(
+            
         count = Post.objects.count()
         for client, url in clients:
             with self.subTest(client=client, url=url):
