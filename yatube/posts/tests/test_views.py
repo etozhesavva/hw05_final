@@ -67,10 +67,9 @@ class PostPagesTests(TestCase):
         cls.guest_client = Client()
         cls.authorized_client = Client()
         cls.authorized_client2 = Client()
+        cls.authorized_client.force_login(cls.user)
+        cls.authorized_client2.force_login(cls.user2)
 
-    def setUp(self):
-        self.authorized_client.force_login(self.user)
-        self.authorized_client2.force_login(self.user2)
 
     def post_checking(self, post):
         self.assertEqual(post.pk, self.post.pk)
@@ -121,17 +120,19 @@ class PostPagesTests(TestCase):
         self.assertEqual(self.user, response.context.get('author'))
 
     def test_cache_index_page(self):
+        page = self.authorized_client.get(INDEX).content
+        Post.objects.create(
+            text='text', author=self.user, group=self.group
+        )
+        self.assertEqual(
+            page, self.authorized_client.get(INDEX).content)
         cache.clear()
-        response = self.authorized_client.get(INDEX)
-        cached_response = response.content
-        post = Post.objects.get(pk=1)
-        post.delete()
-        response = self.authorized_client.get(INDEX)
-        self.assertEqual(response.content, cached_response)
+        self.assertNotEqual(
+            page, self.authorized_client.get(INDEX).content)
 
     def test_unfollow_index_page_null(self):
         response = self.authorized_client2.get(FOLLOW_INDEX)
-        self.assertEqual(len(response.context['page_obj']), 0)
+        self.assertNotIn(self.post, response.context['page_obj'])
 
     def test_follow_user(self):
         self.authorized_client2.get(FOLLOW)
@@ -140,10 +141,12 @@ class PostPagesTests(TestCase):
 
     def test_unfollow_user(self):
         self.authorized_client2.get(FOLLOW)
+        self.assertTrue(Follow.objects.filter(user=self.user2,
+                                              author=self.user).exists())
         self.authorized_client2.get(UNFOLLOW)
-        follow_exist = Follow.objects.filter(user=self.user2,
-                                             author=self.user).exists()
-        self.assertFalse(follow_exist)
+        self.assertFalse(
+            Follow.objects.filter(user=self.user, author=self.user2).exists()
+        )
 
 
 class PaginatorViewsTest(TestCase):

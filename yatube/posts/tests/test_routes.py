@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.urls import reverse
+from django.conf import settings
 
 SLUG = 'testgroup'
 USERNAME = 'TestAuthor'
@@ -8,22 +9,22 @@ POST_ID = 1
 
 class ReverseTests(TestCase):
     urls_names = [
-        ['/', 'posts:index', []],
-        ['/create/', 'posts:create', []],
-        [f'/group/{SLUG}/', 'posts:group', [SLUG]],
-        [f'/profile/{USERNAME}/', 'posts:profile', [USERNAME]],
-        [f'/posts/{POST_ID}/', 'posts:post_detail', [POST_ID]],
-        [f'/posts/{POST_ID}/edit/', 'posts:post_edit', [POST_ID]],
-        [f'/posts/{POST_ID}/comment/', 'posts:add_comment', [POST_ID]],
-        ['/follow/', 'posts:follow_index', []],
-        [f'/profile/{USERNAME}/follow/', 'posts:profile_follow', [USERNAME]],
+        ['/', 'index', []],
+        ['/create/', 'create', []],
+        [f'/group/{SLUG}/', 'group', [SLUG]],
+        [f'/profile/{USERNAME}/', 'profile', [USERNAME]],
+        [f'/posts/{POST_ID}/', 'post_detail', [POST_ID]],
+        [f'/posts/{POST_ID}/edit/', 'post_edit', [POST_ID]],
+        [f'/posts/{POST_ID}/comment/', 'add_comment', [POST_ID]],
+        ['/follow/', 'follow_index', []],
+        [f'/profile/{USERNAME}/follow/', 'profile_follow', [USERNAME]],
         [f'/profile/{USERNAME}/unfollow/',
-         'posts:profile_unfollow', [USERNAME]]
+         'profile_unfollow', [USERNAME]]
     ]
 
     def test_url_uses_correct_reverse(self):
         for direct_url, route, params in self.urls_names:
             self.assertEqual(
-                direct_url, reverse(f'{route}',
+                direct_url, reverse(f'{ settings.POST_PATH }:{route}',
                                     args=params)
             )

@@ -36,7 +36,7 @@ def post_detail(request, post_id):
     return render(request, 'posts/post_detail.html', {
         'post': post,
         'form': CommentForm(),
-        'comments': post.comments.all()
+        'comments': post.comments.all(),
     })
 
 
@@ -86,12 +86,10 @@ def add_comment(request, post_id):
 
 @login_required
 def follow_index(request):
-    return render(request,
-                  'posts/follow.html',
-                  {'page_obj': get_page_context(
-                      Post.objects.filter(
-                          author__following__user=request.user), request)}
-                  )
+    return render(request, 'posts/follow.html', {
+        'page_obj': get_page_context(Post.objects.filter(
+        author__following__user=request.user), request)
+    })
 
 
 @login_required
@@ -104,6 +102,9 @@ def profile_follow(request, username):
 
 @login_required
 def profile_unfollow(request, username):
-    author = get_object_or_404(User, username=username)
-    Follow.objects.filter(user=request.user, author=author).delete()
-    return redirect('posts:profile', username=author.username)
+    get_object_or_404(
+        Follow,
+        user=request.user,
+        author__username=username
+    ).delete()
+    return redirect('posts:profile', username=username)

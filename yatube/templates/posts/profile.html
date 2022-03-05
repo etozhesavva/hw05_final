@@ -4,23 +4,13 @@
     {{ author.username }}
 {% endblock %}
 {% block content %}
-  <div class="container mb-5">        
-    <h1>Все посты пользователя
-        {{ author.get_full_name }}
-    </h1>
-    <h3>Всего постов: 
-      {{author.posts.count}}
-    </h3>
-    <h3>Всего комментариев: 
-      {{author.comments.count}}
-    </h3>
-    <h3>Всего подписок: 
-      {{author.follower.count}}
-    </h3>
-    <h3>Всего подписчиков: 
-      {{author.following.count}}
-    </h3>
-      {% if user != author %}
+  <div class="container py-5">        
+    <h1>Все посты пользователя {{ author.get_full_name }}</h1>
+    <h3>Всего постов: {{author.posts.count}}</h3>
+    <h5>Всего комментариев: {{author.comments.count}}</h3>
+    <h5>Всего подписок: {{author.follower.count}}</h3>
+    <h5>Всего подписчиков: {{author.following.count}}</h3>
+      {% if user.is_authenticated and user.username != author.username  %}
         {% if following %}
           <a class="btn btn-lg btn-light"
              href="{% url 'posts:profile_unfollow' author.username %}"
@@ -32,7 +22,7 @@
         {% endif %}
       {% endif %}  
     {% for post in page_obj %}
-      {% include 'posts/post_item.html' %}
+      {% include 'posts/includes/post_item.html' %}
     {% endfor %}
   </div>
   {% include 'posts/includes/paginator.html' %}

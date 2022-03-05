@@ -9,7 +9,7 @@
     <h1>Последние посты избранных авторов</h1>
     {% include 'posts/includes/switcher.html' with follow=True %}
       {% for post in page_obj %}
-        {% include 'posts/post_item.html' %}
+        {% include 'posts/includes/post_item.html' %}
       {% endfor %}
   </div>  
   {% include 'posts/includes/paginator.html' %}

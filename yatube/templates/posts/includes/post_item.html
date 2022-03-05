@@ -13,10 +13,9 @@
     <img class="card-img" src="{{ im.url }}" />
   {% endthumbnail %}
   <a href="{% url 'posts:post_detail' post.id %}">подробная информация</a><br>
-  {% if post.group %}
+  {% if post.group and not without_group %}
     <p>
       Группа:
       <a href="{% url 'posts:group' slug=post.group.slug %}"> {{post.group.title}}</a>
     </p>
   {% endif %}
-  {% if not forloop.last %}<hr>{% endif %}
