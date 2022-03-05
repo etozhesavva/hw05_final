@@ -153,7 +153,8 @@ class FormsTests(TestCase):
         post = response.context['post']
         self.assertEqual(post.text, form_data['text'])
         self.assertEqual(form_data['group'], post.group.id)
-        self.assertEqual(post.image.name, f'{ settings.POST_PATH }/{ UPLOADED.name }')
+        self.assertEqual(post.image.name,
+                         f'{ settings.POST_PATH }/{ UPLOADED.name }')
         self.assertEqual(post.author, self.post.author)
         self.assertRedirects(response, self.POST_URL)
 
@@ -170,7 +171,7 @@ class FormsTests(TestCase):
         self.assertEqual(comment.text, form_data['text'])
         self.assertEqual(comment.author, self.user)
         self.assertEqual(comment.post, self.post)
-    
+
     def test_anonimys_create_post(self):
         Post.objects.all().delete()
         posts_count = Post.objects.count()

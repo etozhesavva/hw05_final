@@ -70,7 +70,6 @@ class PostPagesTests(TestCase):
         cls.authorized_client.force_login(cls.user)
         cls.authorized_client2.force_login(cls.user2)
 
-
     def post_checking(self, post):
         self.assertEqual(post.pk, self.post.pk)
         self.assertEqual(post.text, self.post.text)

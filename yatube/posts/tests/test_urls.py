@@ -47,7 +47,6 @@ class UrlsTests(TestCase):
         cls.author.force_login(cls.user)
         cls.another.force_login(cls.user2)
 
-
     def test_urls_status_code(self):
         urls_names = [
             [self.POST_EDIT_URL, self.another, 302],
