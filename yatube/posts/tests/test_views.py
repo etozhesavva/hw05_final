@@ -106,13 +106,20 @@ class PostPagesTests(TestCase):
     def test_post_detail_show_correct_context(self):
         response = self.authorized_client.get(self.POST_URL)
         post = response.context['post']
+        comments = post.comments.all()
         self.post_checking(post)
-        self.assertEqual(len(response.context['comments']), 1)
-        self.assertEqual(self.comment, response.context.get('comments')[0])
+        self.assertEqual(len(comments), 1)
+        self.assertEqual(self.comment, comments[0])
 
-    def test_post_not_in_group2(self):
-        response_group = self.authorized_client.get(GROUP2)
-        self.assertNotIn(self.post, response_group.context.get('page_obj'))
+    def test_unfollow_index_page_null_or_post_not_in_group2(self):
+        urls = [
+            GROUP2, 
+            FOLLOW_INDEX,
+        ]
+
+        for value in urls:
+            response = self.authorized_client.get(value)
+            self.assertNotIn(self.post, response.context.get('page_obj'))
 
     def test_profile_page_show_correct_context(self):
         response = self.authorized_client.get(PROFILE)
@@ -129,20 +136,14 @@ class PostPagesTests(TestCase):
         self.assertNotEqual(
             page, self.authorized_client.get(INDEX).content)
 
-    def test_unfollow_index_page_null(self):
-        response = self.authorized_client2.get(FOLLOW_INDEX)
-        self.assertNotIn(self.post, response.context['page_obj'])
-
     def test_follow_user(self):
         self.authorized_client2.get(FOLLOW)
         self.assertTrue(Follow.objects.filter(user=self.user2,
                                               author=self.user).exists())
 
-    def test_unfollow_user(self):
-        self.authorized_client2.get(FOLLOW)
-        self.assertTrue(Follow.objects.filter(user=self.user2,
-                                              author=self.user).exists())
-        self.authorized_client2.get(UNFOLLOW)
+    def test_unfollow(self):
+        Follow.objects.create(user=self.user2, author=self.user)
+        self.authorized_client.get(UNFOLLOW)
         self.assertFalse(
             Follow.objects.filter(user=self.user, author=self.user2).exists()
         )

@@ -1,10 +1,10 @@
 from django.test import TestCase
 from django.urls import reverse
-from django.conf import settings
 
 SLUG = 'testgroup'
 USERNAME = 'TestAuthor'
 POST_ID = 1
+POST_PATH = 'posts'
 
 
 class ReverseTests(TestCase):
@@ -25,6 +25,6 @@ class ReverseTests(TestCase):
     def test_url_uses_correct_reverse(self):
         for direct_url, route, params in self.urls_names:
             self.assertEqual(
-                direct_url, reverse(f'{ settings.POST_PATH }:{route}',
+                direct_url, reverse(f'{POST_PATH}:{route}',
                                     args=params)
             )

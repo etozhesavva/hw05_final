@@ -15,6 +15,9 @@ LOGIN_CREATE_POST = f'{AUTH_LOGIN}?next={NEW_POST}'
 FOLLOW_INDEX = reverse('posts:follow_index')
 FOLLOW = reverse('posts:profile_follow', args=[USERNAME])
 UNFOLLOW = reverse('posts:profile_unfollow', args=[USERNAME])
+REDIRECT_INDEX_FOLLOW_URL = (AUTH_LOGIN + '?next=' + FOLLOW_INDEX)
+REDIRECT_FOLLOW_URL = (AUTH_LOGIN + '?next=' + FOLLOW)
+REDIRECT_UNFOLLOW_URL = (AUTH_LOGIN + '?next=' + UNFOLLOW)
 
 
 class UrlsTests(TestCase):
@@ -23,6 +26,7 @@ class UrlsTests(TestCase):
     def setUpClass(cls):
         super().setUpClass()
         cls.user = User.objects.create(username=USERNAME)
+        cls.user2 = User.objects.create(username=USERNAME2)
         cls.group = Group.objects.create(
             title='Test',
             slug=SLUG,
@@ -32,8 +36,7 @@ class UrlsTests(TestCase):
             text='Test',
             author=cls.user,
             group=cls.group
-        )
-        cls.user2 = User.objects.create(username=USERNAME2)
+        )        
         cls.POST_URL = reverse(
             'posts:post_detail',
             args=[cls.post.id])
@@ -58,8 +61,12 @@ class UrlsTests(TestCase):
             [self.POST_EDIT_URL, self.guest, 302],
             [self.POST_EDIT_URL, self.author, 200],
             [NEW_POST, self.author, 200],
+            [FOLLOW_INDEX, self.author, 200],
+            [FOLLOW_INDEX, self.guest, 302],
             [FOLLOW, self.another, 302],
-            [UNFOLLOW, self.another, 302]
+            [FOLLOW, self.guest, 302],
+            [UNFOLLOW, self.another, 302],
+            [UNFOLLOW, self.guest, 302],
         ]
         for url, client, status in urls_names:
             with self.subTest(url=url, client=client, status=status):
@@ -87,7 +94,10 @@ class UrlsTests(TestCase):
              self.LOGIN_EDIT_POST],
             [self.POST_EDIT_URL, self.another, self.POST_URL],
             [FOLLOW, self.another, PROFILE_URL],
-            [UNFOLLOW, self.another, PROFILE_URL]
+            [UNFOLLOW, self.another, PROFILE_URL],
+            [FOLLOW, self.guest, REDIRECT_FOLLOW_URL],
+            [UNFOLLOW, self.guest, REDIRECT_UNFOLLOW_URL],
+            [FOLLOW_INDEX, self.guest, REDIRECT_INDEX_FOLLOW_URL],
         ]
         for url, client, redirect in urls:
             with self.subTest(url=url, client=client):
