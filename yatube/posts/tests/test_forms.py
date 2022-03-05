@@ -222,6 +222,7 @@ class FormsTests(TestCase):
             [self.guest, self.REDIRECT_EDIT_URL],
             [self.another, self.POST_URL]
         ]
+        # не знаю как это фиксить(
         count = Post.objects.count()
         for client, url in clients:
             with self.subTest(client=client, url=url):
@@ -234,5 +235,3 @@ class FormsTests(TestCase):
                 self.assertEqual(count, Post.objects.count())
                 self.post.refresh_from_db()
                 self.assertEqual(Post.objects.count(), count)
-
-#не знаю как это фиксить(
