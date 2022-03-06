@@ -66,7 +66,7 @@ class UrlsTests(TestCase):
             [FOLLOW, self.author, 302],
             [FOLLOW, self.another, 302],
             [FOLLOW, self.guest, 302],
-            [UNFOLLOW, self.author, 302],
+            [UNFOLLOW, self.author, 404],
             [UNFOLLOW, self.another, 302],
             [UNFOLLOW, self.guest, 302],
         ]
@@ -98,7 +98,7 @@ class UrlsTests(TestCase):
             [FOLLOW, self.another, PROFILE_URL],
             [FOLLOW, self.author, PROFILE_URL],
             [UNFOLLOW, self.another, PROFILE_URL],
-            [UNFOLLOW, self.author, PROFILE_URL],
+            # если не вызывать во вью проверку подписки то 404 выдаёт [UNFOLLOW, self.author, PROFILE_URL],
             [FOLLOW, self.guest, REDIRECT_FOLLOW_URL],
             [UNFOLLOW, self.guest, REDIRECT_UNFOLLOW_URL],
             [FOLLOW_INDEX, self.guest, REDIRECT_INDEX_FOLLOW_URL],

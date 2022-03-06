@@ -61,6 +61,11 @@ class FormsTests(TestCase):
             text='test text',
             group=cls.group
         )
+        cls.post2 = Post.objects.create(
+            author=cls.user2,
+            text='test2 text',
+            group=cls.group2
+        )
         cls.POST_URL = reverse(
             'posts:post_detail',
             args=[cls.post.id])
@@ -207,9 +212,9 @@ class FormsTests(TestCase):
         self.assertRedirects(response, self.REDIRECT_COMMENT_URL)
         self.assertEqual(self.post.comments.count(), 0)
 
-    def test_anonimys_or_non_author_post_edit(self):
+    def test_anonimys_or_non_author_post_edit(self):        
         uploaded = SimpleUploadedFile(
-            name='small.gif',
+            name='smasll.gif',
             content=SMALL_GIF,
             content_type='image/gif'
         )
@@ -236,3 +241,4 @@ class FormsTests(TestCase):
                 self.assertEqual(self.post.text, post.text)
                 self.assertEqual(self.post.author, post.author)
                 self.assertEqual(self.post.group, post.group)
+                self.assertEqual(uploaded, form_data['image'])
