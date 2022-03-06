@@ -14,7 +14,7 @@ PROFILE_URL = reverse('posts:profile', kwargs={'username': USERNAME})
 LOGIN_CREATE_POST = f'{AUTH_LOGIN}?next={NEW_POST}'
 FOLLOW_INDEX = reverse('posts:follow_index')
 FOLLOW = reverse('posts:profile_follow', args=[USERNAME])
-UNFOLLOW = reverse('posts:profile_unfollow', kwargs={'username':USERNAME})
+UNFOLLOW = reverse('posts:profile_unfollow', kwargs={'username': USERNAME})
 REDIRECT_INDEX_FOLLOW_URL = (AUTH_LOGIN + '?next=' + FOLLOW_INDEX)
 REDIRECT_FOLLOW_URL = (AUTH_LOGIN + '?next=' + FOLLOW)
 REDIRECT_UNFOLLOW_URL = (AUTH_LOGIN + '?next=' + UNFOLLOW)
