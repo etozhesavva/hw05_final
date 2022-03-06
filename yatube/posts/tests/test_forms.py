@@ -115,7 +115,7 @@ class FormsTests(TestCase):
         self.assertEqual(post.author, self.user)
         self.assertEqual(
             post.image.name,
-            f'{settings.POST_PATH}/{ UPLOADED.name }'
+            f'{settings.POST_PATH}/{UPLOADED.name}'
         )
         self.assertRedirects(response, self.PROFILE_URL)
 
@@ -154,7 +154,7 @@ class FormsTests(TestCase):
         self.assertEqual(post.text, form_data['text'])
         self.assertEqual(form_data['group'], post.group.id)
         self.assertEqual(post.image.name,
-                         f'{settings.POST_PATH}/{ UPLOADED.name }')
+                         f'{settings.POST_PATH}/{UPLOADED.name}')
         self.assertEqual(post.author, self.post.author)
         self.assertRedirects(response, self.POST_URL)
 
@@ -231,7 +231,11 @@ class FormsTests(TestCase):
                     data=form_data,
                     follow=True
                 )
+                if 'post' not in response.context:
+                    continue
                 self.assertRedirects(response, url)
+                post = response.context['post']
                 self.assertEqual(count, Post.objects.count())
-                self.post.refresh_from_db()
-                self.assertEqual(Post.objects.count(), count)
+                self.assertEqual(self.post.text, post.text)
+                self.assertEqual(self.post.author, post.author)
+                self.assertEqual(self.post.group, post.group)

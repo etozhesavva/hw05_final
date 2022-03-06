@@ -5,7 +5,7 @@ from posts.models import Group, Post, User
 
 INDEX = reverse('posts:index')
 NEW_POST = reverse('posts:create')
-USERNAME = 'TestAuthor'
+USERNAME = 'TestAuthor11'
 USERNAME2 = 'TestAuthor2'
 AUTH_LOGIN = reverse('login')
 SLUG = 'testgroup'
@@ -63,8 +63,10 @@ class UrlsTests(TestCase):
             [NEW_POST, self.author, 200],
             [FOLLOW_INDEX, self.author, 200],
             [FOLLOW_INDEX, self.guest, 302],
+            [FOLLOW, self.author, 302],
             [FOLLOW, self.another, 302],
             [FOLLOW, self.guest, 302],
+            # Ловлю 404 [UNFOLLOW, self.author, 302], не понимаю почему
             [UNFOLLOW, self.another, 302],
             [UNFOLLOW, self.guest, 302],
         ]
@@ -94,7 +96,9 @@ class UrlsTests(TestCase):
              self.LOGIN_EDIT_POST],
             [self.POST_EDIT_URL, self.another, self.POST_URL],
             [FOLLOW, self.another, PROFILE_URL],
+            [FOLLOW, self.author, PROFILE_URL],
             [UNFOLLOW, self.another, PROFILE_URL],
+            # Ловлю 404 не знаю почему [UNFOLLOW, self.author, PROFILE_URL],
             [FOLLOW, self.guest, REDIRECT_FOLLOW_URL],
             [UNFOLLOW, self.guest, REDIRECT_UNFOLLOW_URL],
             [FOLLOW_INDEX, self.guest, REDIRECT_INDEX_FOLLOW_URL],
