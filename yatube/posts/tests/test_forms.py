@@ -222,7 +222,6 @@ class FormsTests(TestCase):
             [self.guest, self.REDIRECT_EDIT_URL],
             [self.another, self.POST_URL]
         ]
-        # не знаю как это фиксить(
         count = Post.objects.count()
         for client, url in clients:
             with self.subTest(client=client, url=url):
@@ -231,10 +230,8 @@ class FormsTests(TestCase):
                     data=form_data,
                     follow=True
                 )
-                if 'post' not in response.context:
-                    continue
                 self.assertRedirects(response, url)
-                post = response.context['post']
+                post = Post.objects.get(pk=self.post.id)
                 self.assertEqual(count, Post.objects.count())
                 self.assertEqual(self.post.text, post.text)
                 self.assertEqual(self.post.author, post.author)
