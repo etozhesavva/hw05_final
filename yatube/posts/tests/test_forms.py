@@ -212,7 +212,7 @@ class FormsTests(TestCase):
         self.assertRedirects(response, self.REDIRECT_COMMENT_URL)
         self.assertEqual(self.post.comments.count(), 0)
 
-    def test_anonimys_or_non_author_post_edit(self):        
+    def test_anonimys_or_non_author_post_edit(self):
         uploaded = SimpleUploadedFile(
             name='smasll.gif',
             content=SMALL_GIF,
