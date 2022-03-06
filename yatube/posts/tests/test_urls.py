@@ -14,7 +14,7 @@ PROFILE_URL = reverse('posts:profile', kwargs={'username': USERNAME})
 LOGIN_CREATE_POST = f'{AUTH_LOGIN}?next={NEW_POST}'
 FOLLOW_INDEX = reverse('posts:follow_index')
 FOLLOW = reverse('posts:profile_follow', args=[USERNAME])
-UNFOLLOW = reverse('posts:profile_unfollow', args=[USERNAME])
+UNFOLLOW = reverse('posts:profile_unfollow', kwargs={'username':USERNAME})
 REDIRECT_INDEX_FOLLOW_URL = (AUTH_LOGIN + '?next=' + FOLLOW_INDEX)
 REDIRECT_FOLLOW_URL = (AUTH_LOGIN + '?next=' + FOLLOW)
 REDIRECT_UNFOLLOW_URL = (AUTH_LOGIN + '?next=' + UNFOLLOW)
@@ -66,7 +66,7 @@ class UrlsTests(TestCase):
             [FOLLOW, self.author, 302],
             [FOLLOW, self.another, 302],
             [FOLLOW, self.guest, 302],
-            # Ловлю 404 [UNFOLLOW, self.author, 302], не понимаю почему
+            [UNFOLLOW, self.author, 302],
             [UNFOLLOW, self.another, 302],
             [UNFOLLOW, self.guest, 302],
         ]
@@ -98,7 +98,7 @@ class UrlsTests(TestCase):
             [FOLLOW, self.another, PROFILE_URL],
             [FOLLOW, self.author, PROFILE_URL],
             [UNFOLLOW, self.another, PROFILE_URL],
-            # Ловлю 404 не знаю почему [UNFOLLOW, self.author, PROFILE_URL],
+            [UNFOLLOW, self.author, PROFILE_URL],
             [FOLLOW, self.guest, REDIRECT_FOLLOW_URL],
             [UNFOLLOW, self.guest, REDIRECT_UNFOLLOW_URL],
             [FOLLOW_INDEX, self.guest, REDIRECT_INDEX_FOLLOW_URL],
